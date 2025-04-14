@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CC="mpicc"
-SRC="mpi.c"
+SRC="caesar.c"
 TARGET="build/erm.out"
 
 if [[ $1 == "run" ]]; then
