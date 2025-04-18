@@ -11,6 +11,12 @@ int main(int argc, char **argv)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &world);
 
+	if(world == 1) 
+	{
+		printf("There is no slaves to utilize (only 1 processor available)\n");
+		MPI_Finalize();
+		return 1;
+	}
 
   if (rank == 0) 
 	{
