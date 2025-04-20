@@ -3,19 +3,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define ABORT_ERROR(code, msg) do \
+{\
+	fprintf(stderr, msg "\n");\
+  MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE); \
+} while(0)
+
+#define ABORT_PERROR(code, msg) do \
+{\
+	perror(msg);\
+  MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE); \
+} while(0)
+
+
 int main(int argc, char **argv) 
 {
   MPI_Init(&argc, &argv);
-
+	int xddmors = 10;
   int rank, world;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &world);
 
 	if(world == 1) 
 	{
-		printf("There is no slaves to utilize (only 1 processor available)\n");
-		MPI_Finalize();
-		return 1;
+		ABORT_ERROR(1, "There is no slaves to utilize (only 1 processor available)");
 	}
 
   if (rank == 0) 
@@ -26,7 +37,7 @@ int main(int argc, char **argv)
 
     int *arr = malloc(arr_size * sizeof(int));
 		if(arr == NULL)
-			perror("memory allocation failed");
+			ABORT_PERROR(1, "memory allocation failed");
 
     printf("Please enter array elements...\n");
     for (int i = 0; i < arr_size; i++) 
@@ -74,7 +85,6 @@ int main(int argc, char **argv)
 
 		for (int i = 0; i < seg_size;i++) 
 		{
-			printf("%d \n", arr[i]);
 			if (max < arr[i]){
 				max = arr[i];
 				max_index= i;
